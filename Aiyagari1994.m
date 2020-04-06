@@ -108,7 +108,7 @@ FnsToEvaluate_1 = @(aprime,a,z) a; %We just want the aggregate assets (which is 
 FnsToEvaluate={FnsToEvaluate_1};
 
 % Following line could be used to test that we are setting things up correctly, but is not needed at this stage.
-AggVars=EvalFnOnAgentDist_AggVars_Case1(StationaryDist, Policy, FnsToEvaluate, Params, FnsToEvaluateParamNames, n_d, n_k, n_l, d_grid, a_grid, z_grid, 2);
+AggVars=EvalFnOnAgentDist_AggVars_Case1(StationaryDist, Policy, FnsToEvaluate, Params, FnsToEvaluateParamNames, n_d, n_k, n_l, d_grid, a_grid, z_grid, Parallel);
 
 %Now define the functions for the General Equilibrium conditions
     %Should be written as LHS of general equilibrium eqn minus RHS, so that 
@@ -138,15 +138,15 @@ p_eqm
 % p_grid2=linspace(p_grid(p_eqm_index2-5),p_grid(p_eqm_index2+5),n_p); heteroagentoptions.pgrid=p_grid2;
 % [p_eqm3,p_eqm_index3,MarketClearanceVec3]=HeteroAgentStationaryEqm_Case1(n_d, n_a, n_z, n_p, pi_z, d_grid, a_grid, z_grid, ReturnFn, FnsToEvaluate, GeneralEqmEqns, Params, DiscountFactorParamNames, ReturnFnParamNames, FnsToEvaluateParamNames, GeneralEqmEqnsParamNames, PriceParamNames,heteroagentoptions, simoptions, vfoptions);
 % 
-% [p_eqm, p_eqm2, p_eqm3]
+% [p_eqm.r, p_eqm2.r, p_eqm3.r]
 
 %% Now that we have the GE, let's calculate a bunch of related objects
 
 % Equilibrium wage
-Params.w=(1-Params.alpha)*((p_eqm+Params.delta)/Params.alpha)^(Params.alpha/(Params.alpha-1));
+Params.w=(1-Params.alpha)*((p_eqm.r+Params.delta)/Params.alpha)^(Params.alpha/(Params.alpha-1));
 
 disp('Calculating various equilibrium objects')
-Params.r=p_eqm;
+Params.r=p_eqm.r;
 [V,Policy]=ValueFnIter_Case1(n_d,n_k,n_l,d_grid,a_grid,z_grid, pi_z, ReturnFn, Params, DiscountFactorParamNames, ReturnFnParamNames, vfoptions);
 
 % By default Policy contains the indexes corresponding to the optimal
@@ -155,7 +155,7 @@ Params.r=p_eqm;
 
 StationaryDist=StationaryDist_Case1(Policy,n_d,n_k,n_l,pi_z, simoptions);
 
-AggregateVars=EvalFnOnAgentDist_AggVars_Case1(StationaryDist, Policy, FnsToEvaluate,Params, FnsToEvaluateParamNames,n_d, n_k, n_l, d_grid, a_grid,z_grid)
+AggregateVars=EvalFnOnAgentDist_AggVars_Case1(StationaryDist, Policy, FnsToEvaluate,Params, FnsToEvaluateParamNames,n_d, n_k, n_l, d_grid, a_grid,z_grid, Parallel)
 
 % save ./SavedOutput/Aiyagari1994_Objects.mat p_eqm Policy StationaryDist
 
