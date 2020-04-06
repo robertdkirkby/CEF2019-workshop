@@ -94,16 +94,9 @@ DiscountFactorParamNames={'beta'};
 ReturnFn=@(aprime_val, a_val, z_val,alpha,delta,mu,r) Aiyagari1994_ReturnFn(aprime_val, a_val, z_val,alpha,delta,mu,r);
 ReturnFnParamNames={'alpha','delta','mu','r'}; %It is important that these are in same order as they appear in 'Aiyagari1994_ReturnFn'
 
-% Initial guess for value function.
-if Parallel==2
-    V0=ones(n_k,n_l,'gpuArray'); %(a,z)
-else
-    V0=ones(n_k,n_l); %(a,z)
-end
-
 % Following lines could be used to test that we are setting things up
 % correctly, but is not needed at this stage.
-% [V,Policy]=ValueFnIter_Case1(V0, n_d,n_k,n_l,d_grid,a_grid,z_grid, pi_z, ReturnFn, Params, DiscountFactorParamNames, ReturnFnParamNames, vfoptions);
+% [V,Policy]=ValueFnIter_Case1(n_d,n_k,n_l,d_grid,a_grid,z_grid, pi_z, ReturnFn, Params, DiscountFactorParamNames, ReturnFnParamNames, vfoptions);
 % StationaryDist=StationaryDist_Case1(Policy,n_d,n_k,n_l,pi_z);
 
 %% Solve for the General Equilibrium
@@ -131,7 +124,7 @@ GeneralEqmEqns={GeneralEqmEqn_1};
 PriceParamNames={'r'};
 
 disp('Calculating price vector corresponding to the stationary eqm')
-[p_eqm,~,GeneralEqmCondns]=HeteroAgentStationaryEqm_Case1(V0, n_d, n_k, n_l, n_p, pi_z, d_grid, a_grid, z_grid, ReturnFn, FnsToEvaluate, GeneralEqmEqns, Params, DiscountFactorParamNames, ReturnFnParamNames, FnsToEvaluateParamNames, GeneralEqmEqnsParamNames, PriceParamNames,heteroagentoptions, simoptions, vfoptions);
+[p_eqm,~,GeneralEqmCondns]=HeteroAgentStationaryEqm_Case1(n_d, n_k, n_l, n_p, pi_z, d_grid, a_grid, z_grid, ReturnFn, FnsToEvaluate, GeneralEqmEqns, Params, DiscountFactorParamNames, ReturnFnParamNames, FnsToEvaluateParamNames, GeneralEqmEqnsParamNames, PriceParamNames,heteroagentoptions, simoptions, vfoptions);
 % The three output are the general equilibrium price, the index for the
 % price in the price grid (that option is unused here), and the value of
 % the General equilibrium conditions in equilibrium (note that they should
@@ -140,10 +133,10 @@ p_eqm
 
 % % Alternatively, you could use the p_grid option
 % n_p=101; p_grid=linspace(0.03,r_ss,n_p); heteroagentoptions.pgrid=p_grid;
-% [p_eqm2,p_eqm_index2,MarketClearanceVec2]=HeteroAgentStationaryEqm_Case1(V0, n_d, n_a, n_z, n_p, pi_z, d_grid, a_grid, z_grid, ReturnFn, FnsToEvaluate, GeneralEqmEqns, Params, DiscountFactorParamNames, ReturnFnParamNames, FnsToEvaluateParamNames, GeneralEqmEqnsParamNames, PriceParamNames,heteroagentoptions, simoptions, vfoptions);
+% [p_eqm2,p_eqm_index2,MarketClearanceVec2]=HeteroAgentStationaryEqm_Case1(n_d, n_a, n_z, n_p, pi_z, d_grid, a_grid, z_grid, ReturnFn, FnsToEvaluate, GeneralEqmEqns, Params, DiscountFactorParamNames, ReturnFnParamNames, FnsToEvaluateParamNames, GeneralEqmEqnsParamNames, PriceParamNames,heteroagentoptions, simoptions, vfoptions);
 % % Can even do so as multigrid (use course grid, then fine grid in region of solution)
 % p_grid2=linspace(p_grid(p_eqm_index2-5),p_grid(p_eqm_index2+5),n_p); heteroagentoptions.pgrid=p_grid2;
-% [p_eqm3,p_eqm_index3,MarketClearanceVec3]=HeteroAgentStationaryEqm_Case1(V0, n_d, n_a, n_z, n_p, pi_z, d_grid, a_grid, z_grid, ReturnFn, FnsToEvaluate, GeneralEqmEqns, Params, DiscountFactorParamNames, ReturnFnParamNames, FnsToEvaluateParamNames, GeneralEqmEqnsParamNames, PriceParamNames,heteroagentoptions, simoptions, vfoptions);
+% [p_eqm3,p_eqm_index3,MarketClearanceVec3]=HeteroAgentStationaryEqm_Case1(n_d, n_a, n_z, n_p, pi_z, d_grid, a_grid, z_grid, ReturnFn, FnsToEvaluate, GeneralEqmEqns, Params, DiscountFactorParamNames, ReturnFnParamNames, FnsToEvaluateParamNames, GeneralEqmEqnsParamNames, PriceParamNames,heteroagentoptions, simoptions, vfoptions);
 % 
 % [p_eqm, p_eqm2, p_eqm3]
 
@@ -154,7 +147,7 @@ Params.w=(1-Params.alpha)*((p_eqm+Params.delta)/Params.alpha)^(Params.alpha/(Par
 
 disp('Calculating various equilibrium objects')
 Params.r=p_eqm;
-[V,Policy]=ValueFnIter_Case1(V0, n_d,n_k,n_l,d_grid,a_grid,z_grid, pi_z, ReturnFn, Params, DiscountFactorParamNames, ReturnFnParamNames, vfoptions);
+[V,Policy]=ValueFnIter_Case1(n_d,n_k,n_l,d_grid,a_grid,z_grid, pi_z, ReturnFn, Params, DiscountFactorParamNames, ReturnFnParamNames, vfoptions);
 
 % By default Policy contains the indexes corresponding to the optimal
 % policy. Can get the policy values using vfoptions.polindorval=1 or,
@@ -162,7 +155,7 @@ Params.r=p_eqm;
 
 StationaryDist=StationaryDist_Case1(Policy,n_d,n_k,n_l,pi_z, simoptions);
 
-AggregateVars=EvalFnOnAgentDist_AggVars_Case1(StationaryDist, Policy, FnsToEvaluate,Params, FnsToEvaluateParamNames,n_d, n_k, n_l, d_grid, a_grid,z_grid,2)
+AggregateVars=EvalFnOnAgentDist_AggVars_Case1(StationaryDist, Policy, FnsToEvaluate,Params, FnsToEvaluateParamNames,n_d, n_k, n_l, d_grid, a_grid,z_grid)
 
 % save ./SavedOutput/Aiyagari1994_Objects.mat p_eqm Policy StationaryDist
 
