@@ -200,7 +200,7 @@ plot(a_grid,cumsum(sum(StationaryDist,2))) %Plot the asset cdf
 fprintf('For parameter values sigma=%.2f, mu=%.2f, rho=%.2f \n', [Params.sigma,Params.mu,Params.rho])
 fprintf('The table 1 elements are sigma=%.4f, rho=%.4f \n',[sqrt(l_variance), l_corr])
 
-fprintf('The equilibrium value of the interest rate is r=%.4f \n', p_eqm*100)
+fprintf('The equilibrium value of the interest rate is r=%.4f \n', p_eqm.r*100)
 fprintf('The equilibrium value of the aggregate savings rate is s=%.4f \n', aggsavingsrate)
 %fprintf('Time required to find the eqm was %.4f seconds \n',findeqmtime)
 
