@@ -59,6 +59,9 @@ l_grid=exp(l_grid);
 % In theory this would always be true, but for smaller grids on l, it fails
 % to be true due to numerical error.
 l_grid=l_grid./Expectation_l;
+% Recalculate Expectation_l as want to use it later as part of general equilibrium condition.
+[Expectation_l,~,~,~]=MarkovChainMoments(l_grid,pi_l,mcmomentsoptions); %Since z is exogenous, this will be it's eqm value 
+
 
 % Calculate some things we will want later (about how the Tauchen method is
 % performing as an approximation of the exogenous shock process (Aiyagari,
